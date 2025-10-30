@@ -1,0 +1,418 @@
+# StakeWise Smart Contracts - Agent Context
+
+## Project Overview
+This is a Solidity-based smart contracts project for tokenized Ethereum staking. The project uses Hardhat as the development framework and implements upgradeable contracts using OpenZeppelin patterns.
+
+## Documentation Structure
+Project documentation should be organized logically:
+
+### Core Documentation
+- `README.md` - Main project overview, deployment instructions, and quickstart
+- Contract inline documentation - NatSpec comments for all public/external functions
+- Test documentation - Clear test descriptions and scenarios
+
+### Architecture & Design
+- Contract architecture - Upgradeable patterns, role-based access control
+- Integration patterns - How contracts interact with each other
+- Security considerations - Known limitations and trust assumptions
+
+### Development & Testing
+- Hardhat configuration - Network settings, compiler options, plugins
+- Test coverage requirements - Minimum coverage thresholds
+- Gas optimization strategies - Patterns for gas-efficient code
+
+### Project Management
+- Commit message conventions - Clear, descriptive commit messages
+- Code review process - Multi-pass review requirements
+- Deployment procedures - Upgrade and verification processes
+
+## Key Architecture Patterns
+- **OpenZeppelin Contracts**: Use stable, audited implementations from OpenZeppelin
+- **Upgradeable Contracts**: Use OpenZeppelin Upgrades for proxy patterns (except Solos)
+- **Role-Based Access Control**: Operators, Admins, Pausers, and Oracles roles
+- **Event-Driven**: All state changes emit events for off-chain monitoring
+- **Optimized Compilation**: 5,000,000 optimizer runs for mainnet deployment
+
+## Technology Stack
+- **Language**: Solidity 0.7.5
+- **Framework**: Hardhat
+- **Testing**: Hardhat + Chai + OpenZeppelin Test Helpers
+- **Key Libraries**: OpenZeppelin Contracts 3.4.1, OpenZeppelin Contracts Upgradeable 3.4.1
+- **Tools**: Solhint (linting), Prettier (formatting), Slither (static analysis), Hardhat Coverage
+
+## Agent Guidelines
+When working with this codebase:
+
+1. **Solidity Best Practices**
+   - Follow Solidity style guide and naming conventions
+   - Use NatSpec comments for all public/external functions
+   - Prefer established patterns from OpenZeppelin over custom implementations
+   - Be mindful of gas costs and optimize where reasonable
+
+2. **Smart Contract Security**
+   - Follow checks-effects-interactions pattern to prevent reentrancy
+   - Validate all inputs and state transitions
+   - Use SafeMath (or built-in 0.8+ checks if upgrading)
+   - Consider upgrade implications for storage layout
+   - Document any trust assumptions or centralization risks
+
+3. **Testing Requirements**
+   - Write comprehensive unit tests for all functionality
+   - Include edge cases and failure scenarios
+   - Test upgrade scenarios for upgradeable contracts
+   - Maintain or improve test coverage with each change
+   - Use mainnet fork testing for integration scenarios
+
+4. **Code Organization**
+   - Keep contracts focused and modular
+   - Use interfaces for contract interactions
+   - Separate concerns (storage, logic, access control)
+   - Follow established directory structure (collectors/, interfaces/, tokens/, etc.)
+
+5. **Linting & Formatting**
+   - Run `yarn lint` before committing
+   - Use `yarn lint:fix` to auto-fix JavaScript issues
+   - Ensure Solhint passes with 0 warnings (--max-warnings 0)
+   - Format code with Prettier for consistency
+
+## Code Review Process
+
+### Required Review Passes (Minimum 3, Maximum 5)
+
+**Pass 1: Functionality Verification**
+- Verify all contract functions work correctly with expected inputs
+- Check that all tests pass (`yarn test`)
+- Ensure no compilation warnings or errors
+- Validate that new functions are properly tested
+- Confirm event emissions for all state changes
+
+**Pass 2: Security & Architecture Compliance**
+- Review for common vulnerabilities (reentrancy, overflow, access control)
+- Verify checks-effects-interactions pattern is followed
+- Ensure proper access control modifiers are applied
+- Check storage layout for upgradeable contracts (no conflicts)
+- Validate that OpenZeppelin patterns are used correctly
+- Review gas usage and optimize if excessive
+
+**Pass 3: Code Quality & Standards**
+- Remove duplicate code and unused functions
+- Verify naming conventions are consistent
+- Check that all public/external functions have NatSpec comments
+- Ensure error messages are descriptive
+- Validate consistent error handling patterns
+- Confirm proper use of custom errors (if using Solidity 0.8+)
+
+**Pass 4: Testing & Coverage (if issues found in Pass 3)**
+- Verify test coverage meets minimum thresholds
+- Check edge cases are tested
+- Ensure failure scenarios are covered
+- Validate gas usage tests if applicable
+- Test upgrade scenarios for modified upgradeable contracts
+
+**Pass 5: Final Validation (if issues found in Pass 4)**
+- Comprehensive end-to-end validation
+- Final security review
+- Documentation completeness check
+- Integration testing with related contracts
+
+### Review Completion Criteria
+- All tests pass without errors
+- Linting passes with 0 warnings (`yarn lint`)
+- Test coverage is maintained or improved
+- All new functions have NatSpec documentation
+- No security vulnerabilities introduced
+- Gas usage is reasonable and optimized where possible
+- Storage layout is safe for upgradeable contracts
+
+## Rule Enforcement Mechanisms
+
+### Mandatory Compliance Checks
+Before any code changes are considered complete, the following must be verified:
+
+1. **Compilation & Linting**
+   - Code must compile without errors or warnings
+   - Solhint must pass with `--max-warnings 0`
+   - Prettier formatting must be applied
+   - No unused imports or variables
+
+2. **Testing Requirements**
+   - All existing tests must pass
+   - New functionality must have corresponding tests
+   - Test coverage should not decrease
+   - Critical paths must have both success and failure tests
+
+3. **Security Validation**
+   - No reentrancy vulnerabilities
+   - Proper access control on sensitive functions
+   - Input validation for all external functions
+   - Safe math operations (or use Solidity 0.8+ built-in checks)
+   - No uninitialized storage pointers
+   - Proper handling of external calls
+
+4. **Upgradeable Contract Safety**
+   - Storage layout must not conflict with parent contracts
+   - Constructors must not be used (use initializers)
+   - `initializer` modifier must be used for initialization functions
+   - No `selfdestruct` or `delegatecall` without careful consideration
+   - State variables must be appended, never inserted or removed
+
+5. **Gas Optimization**
+   - Avoid unnecessary storage operations
+   - Use events for data that doesn't need to be on-chain
+   - Batch operations when possible
+   - Consider `calldata` vs `memory` for function parameters
+   - Use appropriate data types (don't use uint256 for everything)
+
+6. **Documentation Requirements**
+   - All public/external functions must have NatSpec comments
+   - Complex logic should have inline comments explaining "why"
+   - Security assumptions must be documented
+   - Upgrade implications must be noted
+
+### Validation Requirements
+
+**Pre-Commit Validation Checklist:**
+- [ ] Code compiles successfully (`yarn compile`)
+- [ ] All tests pass (`yarn test`)
+- [ ] Linting passes with 0 warnings (`yarn lint`)
+- [ ] Code is formatted with Prettier
+- [ ] Test coverage is maintained or improved
+- [ ] All new functions have NatSpec documentation
+- [ ] Security review completed (no new vulnerabilities)
+- [ ] Gas usage is reasonable (check with `yarn test:gas` if needed)
+- [ ] Storage layout is safe for upgradeable contracts
+- [ ] All events are properly emitted for state changes
+
+**Automated Validation Commands:**
+```bash
+# Compile contracts
+yarn compile
+
+# Run tests
+yarn test
+
+# Check linting
+yarn lint
+
+# Check test coverage
+yarn coverage
+
+# Analyze gas usage
+yarn test:gas
+
+# Run static analysis (if Slither is set up)
+yarn slither
+```
+
+### Rule Violation Prevention
+
+**Common Violations to Avoid:**
+1. **Missing Access Control** - Always add appropriate modifiers (onlyAdmin, onlyOperator, etc.)
+2. **Unvalidated Inputs** - Check for zero addresses, valid ranges, etc.
+3. **Reentrancy Risks** - Follow checks-effects-interactions pattern
+4. **Storage Conflicts** - Never reorder or remove state variables in upgradeable contracts
+5. **Missing Events** - Emit events for all significant state changes
+6. **Poor Gas Efficiency** - Avoid unnecessary storage reads/writes in loops
+7. **Incomplete Tests** - Test both success and failure paths
+8. **Missing Documentation** - Document all public/external functions with NatSpec
+
+**Enforcement Actions:**
+- If any rule violation is detected, the code change MUST be rejected
+- All violations MUST be fixed before proceeding to the next review pass
+- Additional review passes MUST be performed until all rules are satisfied
+- Security violations require immediate attention and resolution
+
+## Consistency Maintenance Guidelines
+
+### Solidity Code Pattern Standards
+
+1. **Contract Structure** - All contracts MUST follow this order:
+   ```solidity
+   // SPDX-License-Identifier: GNU GPLv3
+   pragma solidity 0.7.5;
+   
+   // Imports
+   import "@openzeppelin/contracts-upgradeable/...";
+   
+   // Contract declaration with inheritance
+   contract MyContract is ParentContract {
+       // Type declarations (structs, enums)
+       // State variables
+       // Events
+       // Modifiers
+       // Constructor (or initializer for upgradeable)
+       // External functions
+       // Public functions
+       // Internal functions
+       // Private functions
+   }
+   ```
+
+2. **Function Patterns** - Consistent function structure:
+   ```solidity
+   /**
+    * @notice Brief description of what the function does
+    * @dev Additional implementation details if needed
+    * @param paramName Description of the parameter
+    * @return Description of the return value
+    */
+   function myFunction(uint256 paramName) 
+       external 
+       override 
+       onlyAdmin 
+       whenNotPaused 
+       returns (uint256) 
+   {
+       // Checks
+       require(paramName > 0, "MyContract: invalid parameter");
+       
+       // Effects
+       stateVariable = paramName;
+       
+       // Interactions (external calls last)
+       emit MyEvent(paramName);
+       
+       return paramName;
+   }
+   ```
+
+3. **Error Handling** - Consistent error message format:
+   ```solidity
+   // Format: "ContractName: descriptive error message"
+   require(condition, "MyContract: invalid state");
+   revert("MyContract: operation failed");
+   ```
+
+4. **OpenZeppelin Usage** - Prefer OpenZeppelin implementations:
+   - Use `SafeERC20` for token interactions
+   - Use `ReentrancyGuard` for reentrancy protection
+   - Use `Pausable` for emergency stops
+   - Use `AccessControl` or `Ownable` for permissions
+   - Use `Initializable` for upgradeable contracts
+
+### JavaScript/Test Pattern Standards
+
+1. **Test Structure** - Consistent test organization:
+   ```javascript
+   const { expect } = require('chai');
+   const { ethers } = require('hardhat');
+   
+   describe('MyContract', () => {
+     let contract, owner, user1, user2;
+     
+     beforeEach(async () => {
+       // Setup code
+       [owner, user1, user2] = await ethers.getSigners();
+       // Deploy contracts
+     });
+     
+     describe('functionName', () => {
+       it('should perform expected action', async () => {
+         // Test success case
+       });
+       
+       it('should revert when invalid input', async () => {
+         // Test failure case
+         await expect(
+           contract.functionName(invalidInput)
+         ).to.be.revertedWith('MyContract: error message');
+       });
+     });
+   });
+   ```
+
+2. **Code Formatting** - Use Prettier and ESLint:
+   - Run `yarn format` to format JavaScript files
+   - Run `yarn lint:fix` to auto-fix linting issues
+   - Consistent indentation (2 spaces)
+   - Use async/await over promises
+   - Use const/let, never var
+
+### Documentation Requirements
+- All new contracts MUST have a contract-level NatSpec comment explaining purpose
+- All public/external functions MUST have NatSpec documentation
+- Complex internal logic SHOULD have inline comments
+- Security assumptions and trust models MUST be documented
+- Upgrade considerations MUST be noted for upgradeable contracts
+- Integration patterns MUST be explained in README or contract docs
+
+### Quality Assurance Process
+1. **Before Making Changes** - Read and understand existing patterns and architecture
+2. **During Development** - Follow established patterns and use OpenZeppelin libraries
+3. **After Changes** - Run all validation checks and review passes
+4. **Before Committing** - Ensure all rules are satisfied and documentation is updated
+
+## Smart Contract Specific Guidelines
+
+### Gas Optimization Patterns
+- Pack storage variables efficiently (order by size)
+- Use `calldata` for read-only function parameters
+- Cache storage variables in memory when used multiple times
+- Use events instead of storage for historical data
+- Batch operations when possible
+- Consider `unchecked` blocks for Solidity 0.8+ when overflow is impossible
+
+### Security Best Practices
+- Always use checks-effects-interactions pattern
+- Validate all inputs (check for zero address, valid ranges, etc.)
+- Use pull over push for payments (when applicable)
+- Implement emergency pause functionality for critical contracts
+- Be cautious with delegatecall and external contract calls
+- Follow OpenZeppelin security patterns
+- Consider front-running implications
+- Document all trust assumptions
+
+### Upgradeable Contracts Checklist
+- Use `Initializable` and initialize pattern (not constructor)
+- Never reorder, remove, or change types of existing state variables
+- Only append new state variables
+- Be careful with inheritance changes
+- Test upgrade process thoroughly
+- Use `upgradeTo` carefully with proper access control
+- Document storage layout considerations
+
+### Testing Best Practices
+- Test all success paths
+- Test all failure paths and require/revert messages
+- Test edge cases (zero values, max values, boundaries)
+- Test access control (unauthorized access should revert)
+- Test event emissions
+- Test state changes
+- Test integration with other contracts
+- Test upgrade scenarios for upgradeable contracts
+- Use mainnet fork for integration tests when needed
+
+## Project-Specific Considerations
+
+### StakeWise Architecture
+- **Pool.sol** - Upgradeable, handles pooled staking
+- **Solos.sol** - NOT upgradeable (to protect withdrawal credentials)
+- **RewardEthToken.sol** - Upgradeable ERC20 for rewards
+- **StakedEthToken.sol** - Upgradeable ERC20 for staked ETH
+- **Validators.sol** - Validator management with role-based access
+- **Oracles.sol** - Oracle network for off-chain data
+- **VestingEscrow.sol** - Token vesting mechanism
+
+### Key Roles
+- **Admins** - Can pause contracts and manage settings
+- **Operators** - Can register validators and manage operations
+- **Pausers** - Can pause contracts in emergencies
+- **Oracles** - Submit off-chain data (rewards, validator status)
+
+### Integration Considerations
+- External dependency on ETH2 DepositContract
+- Oracle network for validator and reward data
+- ERC20 token standards for sETH2 and rETH2
+- Event-driven architecture for off-chain monitoring
+
+## Summary
+
+This comprehensive rule set ensures:
+- **Secure** smart contracts following industry best practices
+- **Maintainable** code with consistent patterns and documentation
+- **Tested** functionality with high coverage and edge case handling
+- **Gas-optimized** implementations where reasonable
+- **Upgradeable** contracts with safe storage management
+- **Well-documented** code for future developers and auditors
+
+When in doubt, prioritize security over gas optimization, and clarity over cleverness.
